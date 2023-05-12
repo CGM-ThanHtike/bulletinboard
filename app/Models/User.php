@@ -25,7 +25,10 @@ class User extends Authenticatable
         'phone',
         'birthday',
         'address',
-        'role'
+        'role',
+        'created_user_id',
+        'updated_user_id',
+        'deleted_user_id',
     ];
 
     /**
@@ -46,4 +49,11 @@ class User extends Authenticatable
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    // define isAdmin method
+    //     public function isAdmin()
+    // {
+    //     return $this->role === '1';
+    // }
+
 }
