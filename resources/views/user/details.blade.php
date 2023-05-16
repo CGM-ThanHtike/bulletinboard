@@ -5,7 +5,7 @@
     <div class="row justify-content-center mb-3">
         <div class="main-header mb-3 fw-bold d-flex justify-content-between">
             <h1 class="fs-2">ユーザープロフィール</h1>
-            <a href="{{route('user.edit', $user->id)}}" class="text-decoration-underline fw-normal">編集</a></div>
+            <a href=" {{ route('user.edit', $user->id) }}" class="text-decoration-underline fw-normal">編集</a></div>
         <div class="main-section bg-light rounded-3">
            <div class="profile-photo">
 

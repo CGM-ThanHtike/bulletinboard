@@ -20,10 +20,6 @@ use Illuminate\Support\Facades\Auth;
 |
 */
 
-// Route::get('/', function () {
-//     return view('auth.login');
-// });
-
 Route::get('/', function () {
     if (auth()->check()) {
         return redirect()->route('admin.dashboard');
@@ -34,6 +30,23 @@ Route::get('/', function () {
 
 Auth::routes();
 
+Route::middleware(['auth', 'user.access'])->prefix('user')->name('user.')->group(function () {
+    Route::get('/details/{id}', [UserController::class, 'details'])->name('details');
+    // Show the edit form
+    Route::get('/details/{id}/edit', [UserController::class, 'edit'])->name('edit');
+    // Handle the form submission and show the confirmation page
+    Route::put('/details/{id}/edit-confirm', [UserController::class, 'editConfirm'])->name('edit-confirm');
+    // Update the user information in the database
+    Route::put('/details/{id}/update', [UserController::class, 'update'])->name('update');
+});
+
+
+
+
+
+
+
+
 Route::middleware(['auth', 'isAdmin'])->prefix('admin')->name('admin.')->group(function () {
     // Admin dashboard route
     Route::get('dashboard', [AdminController::class, 'index'])->name('dashboard');
@@ -42,10 +55,20 @@ Route::middleware(['auth', 'isAdmin'])->prefix('admin')->name('admin.')->group(f
     // Route::get('profile', [AdminController::class, 'showProfile'])->name('profile');
 });
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index']);
-Route::get('/profile', [UserController::class, 'showProfile'])->name('profile');
-Route::get('/profile/{id}/edit-profile', [UserController::class, 'edit']);
-Route::put('/update-profile/{id}', [UserController::class, 'update']);
+// Route::middleware('user')->prefix('user')->name('user.')->group(function () {
+
+//     Route::get('/details', [UserController::class, 'showProfile'])->name('details');
+//     Route::get('/profile/{id}/edit-profile', [UserController::class, 'edit'])->name('edit');
+// });
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+
+
+// Route::get('/home', [App\Http\Controllers\HomeController::class, 'index']);
+// Route::get('/details', [UserController::class, 'showProfile'])->name('details');
+// Route::get('/profile/{id}/edit-profile', [UserController::class, 'edit']);
+// Route::put('/update-profile/{id}', [UserController::class, 'update']);
 
 
 

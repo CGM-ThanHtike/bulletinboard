@@ -66,6 +66,8 @@ class Kernel extends HttpKernel
 
         //register for Admin middleware
         'isAdmin' => \App\Http\Middleware\AdminMiddleware::class,
+        //register for User middleware
+        'user.access' => \App\Http\Middleware\UserMiddleware::class,
 
     ];
 }

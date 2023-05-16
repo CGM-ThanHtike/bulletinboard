@@ -42,10 +42,10 @@
                     <div class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                         {{-- @if(Auth::user()->role != '2') --}}
                         {{-- @if(Auth::check() && Auth::user()->isAdmin()) --}}
-                        <a class="dropdown-item" href="{{ route('profile') }}">プロフィール</a>
+                        <a class="dropdown-item" href="{{ route('user.details',['id' => Auth::id()]) }}">プロフィール</a>
                         {{-- @endif --}}
                         <hr class="dropdown-divider">
-                        <a class="dropdown-item" href="{{ route('profile') }}">パスワード変更</a>
+                        <a class="dropdown-item" href="{{ route('user.details', ['id' => Auth::id()]) }}">パスワード変更</a>
                         <hr class="dropdown-divider">
                         <a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault();
                                              document.getElementById('logout-form').submit();">

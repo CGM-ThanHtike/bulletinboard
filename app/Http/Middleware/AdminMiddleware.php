@@ -17,11 +17,11 @@ class AdminMiddleware
      */
     public function handle(Request $request, Closure $next)
     {
-        if(Auth::check()) {
-            
+        if (Auth::check()) {
+
             // admin role ==1
             // user role ==2
-            if(Auth::user()->role == '1') {
+            if (Auth::user()->role == '1') {
                 return $next($request);
             } else {
                 return redirect('/home');
@@ -29,14 +29,13 @@ class AdminMiddleware
                 // return redirect('/home')->with('error','Access Denied as you are not Admin');
 
             }
-
         } else {
             // return redirect('/login');
             // session()->flash('error', 'Please login first');
-            return redirect('/login')->with('error','Please login first');
+            return redirect('/login')->with('error', 'Please login first');
         }
-        
 
-        return $next($request);
+
+        // return $next($request);
     }
 }
