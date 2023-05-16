@@ -6,11 +6,13 @@ use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use App\Models\User;
 use Illuminate\Auth\Events\Registered;
+use Illuminate\Contracts\Validation\Rule;
 use Illuminate\Http\Request;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Validation\Rule as ValidationRule;
 
 class RegisterController extends Controller
 {
@@ -56,13 +58,14 @@ class RegisterController extends Controller
     {
         return Validator::make($data, [
             'name' => ['required', 'string', 'max:255'],
-            'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
+            // 'email' => ['required', 'string', 'email', 'max:255', 'unique:users,email,'],
+            'email' => ['required', 'string', 'email', 'max:255', ValidationRule::unique('users')->ignore(auth()->id())],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
             'role' => ['required'],
             'profile' => ['required', 'string'],
-            'phone'=>['nullable'],
-            'birthday'=>['nullable'],
-            'address'=>['nullable'],
+            'phone' => ['nullable'],
+            'birthday' => ['nullable'],
+            'address' => ['nullable'],
         ]);
     }
 
@@ -74,33 +77,32 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
-        // get the ID of the authenticated user who is creating the new user
-        $authenticatedUserId = auth()->id();
-
-        return User::create([
+        $user = User::create([
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
             'role' => $data['role'],
             'profile' => $data['profile'],
-            'phone'=>$data['phone'],
-            'birthday'=>$data['birthday'],
-            'address'=>$data['address'],
-            'created_user_id' => $authenticatedUserId,
-            'updated_user_id' => $authenticatedUserId,
-            'deleted_user_id' => $authenticatedUserId,
+            'phone' => $data['phone'],
+            'birthday' => $data['birthday'],
+            'address' => $data['address'],
         ]);
+
+        // get the ID of the authenticated user who is creating the new user
+        $authenticatedUserId = auth()->id();
+
+        // Set the created_user_id, updated_user_id, and deleted_user_id fields
+        $user->created_user_id = $authenticatedUserId;
+        $user->updated_user_id = $authenticatedUserId;
+        $user->save();
     }
 
-        public function register(Request $request)
+    public function register(Request $request)
     {
         $this->validator($request->all())->validate();
 
         event(new Registered($user = $this->create($request->all())));
 
         return redirect('/admin/dashboard')->with('success', 'User registered successfully.');
-
-}
-
-    
+    }
 }

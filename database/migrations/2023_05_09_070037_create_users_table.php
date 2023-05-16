@@ -22,8 +22,8 @@ class CreateUsersTable extends Migration
             $table->string('phone')->nullable();
             $table->date('birthday')->nullable();
             $table->text('address')->nullable();
-            $table->unsignedBigInteger('created_user_id')->nullable();
-            $table->unsignedBigInteger('updated_user_id')->nullable();
+            $table->unsignedBigInteger('created_user_id');
+            $table->unsignedBigInteger('updated_user_id');
             $table->unsignedBigInteger('deleted_user_id')->nullable();
             $table->foreign('created_user_id')->references('id')->on('users');
             $table->foreign('updated_user_id')->references('id')->on('users');

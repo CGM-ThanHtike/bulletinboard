@@ -25,10 +25,6 @@ class User extends Authenticatable
         'phone',
         'birthday',
         'address',
-        'role',
-        'created_user_id',
-        'updated_user_id',
-        'deleted_user_id',
     ];
 
     /**

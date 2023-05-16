@@ -85,6 +85,13 @@ class UserController extends Controller
             $user->password = bcrypt($request->input('password'));
         }
 
+        // get the ID of the authenticated user who is creating the new user
+        $authenticatedUserId = auth()->id();
+
+        // Set the created_user_id, updated_user_id, and deleted_user_id fields
+        $user->created_user_id = $authenticatedUserId;
+        $user->updated_user_id = $authenticatedUserId;
+
         $user->save();
 
 
