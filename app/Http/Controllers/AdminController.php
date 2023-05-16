@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Post;
 use Illuminate\Http\Request;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
@@ -10,7 +11,7 @@ use Illuminate\Support\Facades\Auth;
 
 class AdminController extends Controller
 {
-   /**
+    /**
      * Create a new controller instance.
      *
      * @return void
@@ -29,9 +30,8 @@ class AdminController extends Controller
     public function index()
     {
         $users = User::all();
-        // $user = auth()->user();
-        // return view('admin.profile')->with('user', $user);
-        return view('admin.dashboard')->with('users', $users);
+        $posts = Post::all();
+        return view('admin.dashboard', compact('users', 'posts'));
     }
 
     // public function register()

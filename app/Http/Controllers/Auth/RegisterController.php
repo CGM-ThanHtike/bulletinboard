@@ -77,6 +77,13 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
+        // Get the ID of the authenticated user who is creating the new user
+        $authenticatedUserId = auth()->id();
+
+        // Set the created_user_id and updated_user_id fields
+        $data['created_user_id'] = $authenticatedUserId;
+        $data['updated_user_id'] = $authenticatedUserId;
+
         $user = User::create([
             'name' => $data['name'],
             'email' => $data['email'],
@@ -86,15 +93,11 @@ class RegisterController extends Controller
             'phone' => $data['phone'],
             'birthday' => $data['birthday'],
             'address' => $data['address'],
+            'created_user_id' => $data['created_user_id'],
+            'updated_user_id' => $data['updated_user_id'],
         ]);
 
-        // get the ID of the authenticated user who is creating the new user
-        $authenticatedUserId = auth()->id();
-
-        // Set the created_user_id, updated_user_id, and deleted_user_id fields
-        $user->created_user_id = $authenticatedUserId;
-        $user->updated_user_id = $authenticatedUserId;
-        $user->save();
+        return $user;
     }
 
     public function register(Request $request)

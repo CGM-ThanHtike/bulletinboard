@@ -118,6 +118,7 @@
 
                         <div class="row mb-0">
                             <div class="col-md-6 offset-md-4">
+                                <button type="reset" class="btn btn-outline-primary">クリア</button>
                                 <button type="submit" class="btn btn-primary">
                                     {{ __('確認') }}
                                 </button>

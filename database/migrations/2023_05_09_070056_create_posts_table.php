@@ -18,12 +18,12 @@ class CreatePostsTable extends Migration
             $table->string('title');
             $table->string('description');
             $table->tinyInteger('status')->default(1);
-            $table->unsignedBigInteger('created_user_id')->nullable();
-            $table->unsignedBigInteger('updated_user_id')->nullable();
+            $table->unsignedBigInteger('created_user_id');
+            $table->unsignedBigInteger('updated_user_id');
             $table->unsignedBigInteger('deleted_user_id')->nullable();
-            $table->foreign('created_user_id')->references('id')->on('users');
-            $table->foreign('updated_user_id')->references('id')->on('users');
-            $table->foreign('deleted_user_id')->references('id')->on('users');
+            $table->foreign('created_user_id')->references('id')->on('users')->onDelete('set null');
+            $table->foreign('updated_user_id')->references('id')->on('users')->onDelete('set null');
+            $table->foreign('deleted_user_id')->references('id')->on('users')->onDelete('set null');
             $table->timestamps();
         });
     }

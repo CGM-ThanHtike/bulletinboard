@@ -20,11 +20,13 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
-        'password', 
+        'password',
         'profile',
         'phone',
         'birthday',
         'address',
+        'created_user_id',
+        'updated_user_id',
     ];
 
     /**
@@ -46,10 +48,8 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    // define isAdmin method
-    //     public function isAdmin()
-    // {
-    //     return $this->role === '1';
-    // }
-
+    public function posts()
+    {
+        return $this->hasMany(Post::class, 'created_user_id', 'id');
+    }
 }

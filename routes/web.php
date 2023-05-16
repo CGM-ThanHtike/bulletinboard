@@ -6,6 +6,7 @@ use App\Http\Controllers\HomeController;
 // use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\PostsController;
 use Illuminate\Support\Facades\Auth;
 
 
@@ -40,20 +41,33 @@ Route::middleware(['auth', 'user.access'])->prefix('user')->name('user.')->group
     Route::put('/details/{id}/update', [UserController::class, 'update'])->name('update');
 });
 
-
-
-
-
-
-
-
 Route::middleware(['auth', 'isAdmin'])->prefix('admin')->name('admin.')->group(function () {
     // Admin dashboard route
     Route::get('dashboard', [AdminController::class, 'index'])->name('dashboard');
-
-    // Admin profile route
-    // Route::get('profile', [AdminController::class, 'showProfile'])->name('profile');
 });
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+Route::middleware(['auth'])->group(function () {
+    // show post list
+    Route::get('/posts', [PostsController::class, 'index'])->name('posts');
+    Route::get('/posts/create', [PostsController::class, 'create'])->name('posts.create');
+    Route::post('/posts/create-confirm', [PostsController::class, 'createConfirm'])->name('posts.create-confirm');
+    Route::post('/posts/store', [PostsController::class, 'store'])->name('posts.store');
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // Route::middleware('user')->prefix('user')->name('user.')->group(function () {
 
@@ -61,7 +75,6 @@ Route::middleware(['auth', 'isAdmin'])->prefix('admin')->name('admin.')->group(f
 //     Route::get('/profile/{id}/edit-profile', [UserController::class, 'edit'])->name('edit');
 // });
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
 
 

@@ -11,9 +11,7 @@
                     <div class="box-body bg-body-secondary p-5">
                         <h2 class="box-title fw-semibold fs-3">ユーザー数</h2>
                         <div class="count">
-                            <span class="count-text fw-semibold me-2">
-                                {{$users->count()}}
-                            </span><span>件</span>
+                            <span class="count-text fw-semibold me-2">{{$users->count()}}</span><span>件</span>
                         </div>
                         <a href="http:/">ユーザー管理へ</a>
                     </div>
@@ -22,9 +20,9 @@
                     <div class="box-body bg-body-secondary p-5">
                         <h2 class="box-title fw-semibold fs-3">投稿数</h2>
                         <div class="count">
-                            <span class="count-text fw-semibold me-2">10</span><span>件</span>
+                            <span class="count-text fw-semibold me-2">{{$posts->count()}}</span><span>件</span>
                         </div>
-                        <a href="http:/">投稿管理へ</a>
+                        <a href="{{route('posts')}}">投稿管理へ</a>
                     </div>
                 </div>
                 <div class="user-post .nner-box  text-center col-md-4">
