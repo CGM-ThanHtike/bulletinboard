@@ -29,7 +29,7 @@
                     <div class="box-body bg-body-secondary p-5">
                         <h2 class="box-title fw-semibold fs-3">自分の投稿数</h2>
                         <div class="count">
-                            <span class="count-text fw-semibold me-2">10</span><span>件</span>
+                            <span class="count-text fw-semibold me-2">{{ $user->posts->count() }}</span><span>件</span>
                         </div>
                         <a href="http:/">新規投稿</a>
                     </div>

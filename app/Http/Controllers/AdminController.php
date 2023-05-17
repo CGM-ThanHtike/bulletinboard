@@ -29,9 +29,10 @@ class AdminController extends Controller
      */
     public function index()
     {
+        $user = Auth::user();
         $users = User::all();
         $posts = Post::all();
-        return view('admin.dashboard', compact('users', 'posts'));
+        return view('admin.dashboard', compact('users', 'user', 'posts'));
     }
 
     // public function register()

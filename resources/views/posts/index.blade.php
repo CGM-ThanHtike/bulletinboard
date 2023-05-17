@@ -18,8 +18,6 @@
       </div>
     @endforeach
     {{$posts->links()}}
-  @else
-      <p>no post found</p>
   @endif
 
   @if(Auth::user()->role == '2')
@@ -37,8 +35,6 @@
         @endif
         @endforeach
         {{$posts->links()}}
-        @else
-        <p>no post found</p>
   @endif
 
 @endsection
