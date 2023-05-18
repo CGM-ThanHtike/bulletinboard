@@ -163,9 +163,9 @@
                         
                         <div class="row mb-0">
                             <div class="col-md-6 offset-md-4">
-                                <a href="{{ route('user.edit', $user->id) }}" class="btn btn-secondary">Back</a>
+                                <a href="{{ route('user.edit', $user->id) }}" class="btn btn-secondary">戻る</a>
                                 <button type="submit" class="btn btn-primary">
-                                    {{ __('登録') }}
+                                    {{ __('更新') }}
                                 </button>
                             </div>
                         </div>

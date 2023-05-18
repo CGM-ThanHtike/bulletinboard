@@ -31,7 +31,7 @@ class AdminController extends Controller
     {
         $user = Auth::user();
         $users = User::all();
-        $posts = Post::all();
+        $posts = Post::with('user')->get();
         return view('admin.dashboard', compact('users', 'user', 'posts'));
     }
 

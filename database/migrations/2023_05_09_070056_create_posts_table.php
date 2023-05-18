@@ -16,7 +16,7 @@ class CreatePostsTable extends Migration
         Schema::create('posts', function (Blueprint $table) {
             $table->id();
             $table->string('title');
-            $table->string('description');
+            $table->text('description');
             $table->tinyInteger('status')->default(1);
             $table->unsignedBigInteger('created_user_id');
             $table->unsignedBigInteger('updated_user_id');

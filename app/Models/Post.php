@@ -11,6 +11,10 @@ class Post extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class, 'created_user_id', 'id');
+        return $this->belongsTo(User::class, 'created_user_id');
+    }
+    public function userUpdate()
+    {
+        return $this->belongsTo(User::class, 'updated_user_id');
     }
 }

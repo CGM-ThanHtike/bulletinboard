@@ -24,8 +24,13 @@ class PostsController extends Controller
      */
     public function index()
     {
-        $posts = Post::Orderby('created_at', 'desc')->paginate(6);
+        $posts = Post::Orderby('updated_at', 'desc')->with('user')->paginate(5);
         return view('posts.index')->with('posts', $posts);
+
+        // $posts = Post::Orderby('created_at', 'desc')->paginate(5);
+        // $posts = Post::where('status', 1) // Filter posts where status is 1 (published)
+        //     ->orderBy('created_at', 'desc')
+        //     ->paginate(6);
     }
 
     /**
@@ -40,15 +45,33 @@ class PostsController extends Controller
     {
         $validatedData = $request->validate([
             'title' => ['required', 'string', 'max:255'],
-            'description' => ['required', 'string'],
-            'status' => 'required',
+            'description' => ['required', 'max:500'],
+            'status' => 'nullable', // Allow the status to be optional
+        ]);
+
+        // Set the default value for status to 0 if it is not present in the request
+        $status = $validatedData['status'] ?? 0;
+
+        // Store the validated data in the session
+        Session::put('post_data', [
+            'title' => $validatedData['title'],
+            'description' => $validatedData['description'],
+            'status' => $status,
+        ]);
+
+        return view('posts.create-confirm', [
+            'post' => [
+                'title' => $validatedData['title'],
+                'description' => $validatedData['description'],
+                'status' => $status,
+            ],
         ]);
 
         // Store the validated data in the session
-        Session::put('post_data', $validatedData);
-        return view('posts.create-confirm', [
-            'post' => $validatedData, // Pass the validated data as the 'post' variable to the view
-        ]);
+        // Session::put('post_data', $validatedData);
+        // return view('posts.create-confirm', [
+        //     'post' => $validatedData, // Pass the validated data as the 'post' variable to the view
+        // ]);
     }
 
     public function store()
@@ -66,13 +89,14 @@ class PostsController extends Controller
         $user = auth()->user(); // Retrieve the authenticated user or adjust accordingly
 
         // Assign the user's attributes to the post
-        $post->created_user_id = $user->created_user_id;
-        $post->updated_user_id = $user->updated_user_id;
+        $post->created_user_id = $user->id;
+        $post->updated_user_id = $user->id;
         $post->save();
 
         // Clear the session data
         Session::forget('post_data');
 
-        return redirect()->route('posts')->with('success', 'Post created successfully.');
+        // return redirect()->route('posts')->with('success', '投稿が成功しました！ありがとうございます。');
+        return redirect()->route('posts')->with('success', '投稿が成功しました！ありがとうございます。')->with('success_duration', 5000);
     }
 }

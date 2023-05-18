@@ -28,9 +28,9 @@ class HomeController extends Controller
     {
         $user = Auth::user();
         $users = User::all();
-        $posts = Post::all();
+        // $posts = Post::all();
         // $posts = Post::latest()->with('user')->get();
-
+        $posts = Post::with('user')->get();
         return view('home', compact('users', 'user', 'posts'));
 
         // return view('home');

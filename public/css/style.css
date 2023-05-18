@@ -3,19 +3,26 @@
   --hover-color: #a7daff;
 }
 
+/* utilities */
+.cursor-pointer {
+  cursor: pointer;
+}
+
+/* styles */
+
 .bg-brand {
-  background: var(--brand-color,darkblue) ;
+  background: var(--brand-color, darkblue);
 }
 
 .navbar .dropdown-menu {
   background-color: var(--brand-color);
 }
 
-.navbar-nav .nav-link{
+.navbar-nav .nav-link {
   color: #fff;
 }
 
-.navbar-nav .nav-link:hover{
+.navbar-nav .nav-link:hover {
   color: var(--hover-color);
 }
 
@@ -31,6 +38,7 @@
 /* admin dashboard */
 .main-header h1 {
   font-weight: 700;
+  font-size: 2rem;
   color: var(--brand-color);
 }
 
@@ -54,10 +62,11 @@
 .user-data .data .data-title {
   position: relative;
 }
+
 .user-data .data .data-title::after {
- content: ':';
- position: absolute;
- right: 0;
- bottom: 0;
+  content: ':';
+  position: absolute;
+  right: 0;
+  bottom: 0;
 
 }

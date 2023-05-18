@@ -1,9 +1,11 @@
 @extends('layouts.app')
 
 @section('content')
+@include('include.messages')
+
 <div class="container">
     <div class="row justify-content-center">
-        <div class="main-header mb-3 fw-bold"><h1>ホームページ</h1></div>
+        <div class="main-header mb-4 fw-bold"><h1>ホームページ</h1></div>
         <div class="main-section bg-light rounded-3">
             <div class="section-inner row justify-content-center">
                 
@@ -35,7 +37,7 @@
                         <div class="count">
                             <span class="count-text fw-semibold me-2">{{ $user->posts->count() }}</span><span>件</span>
                         </div>
-                        <a class="text-decoration-underline" href="http:/">新規投稿</a>
+                        <a class="text-decoration-underline" href="{{route('posts.create')}}">新規投稿</a>
                     </div>
                 </div>
 

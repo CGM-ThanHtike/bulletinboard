@@ -88,8 +88,7 @@ class UserController extends Controller
         // get the ID of the authenticated user who is creating the new user
         $authenticatedUserId = auth()->id();
 
-        // Set the created_user_id, updated_user_id, and deleted_user_id fields
-        $user->created_user_id = $authenticatedUserId;
+        // Set the updated_user_id, and deleted_user_id fields
         $user->updated_user_id = $authenticatedUserId;
 
         $user->save();
