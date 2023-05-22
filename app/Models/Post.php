@@ -9,6 +9,8 @@ class Post extends Model
 {
     use HasFactory;
 
+    protected $with = ['user', 'userUpdate'];
+
     public function user()
     {
         return $this->belongsTo(User::class, 'created_user_id');

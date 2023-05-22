@@ -32,6 +32,7 @@ Route::get('/', function () {
 Auth::routes();
 
 Route::middleware(['auth', 'user.access'])->prefix('user')->name('user.')->group(function () {
+    // -- User Details--
     Route::get('/details/{id}', [UserController::class, 'details'])->name('details');
     // Show the edit form
     Route::get('/details/{id}/edit', [UserController::class, 'edit'])->name('edit');
@@ -39,7 +40,16 @@ Route::middleware(['auth', 'user.access'])->prefix('user')->name('user.')->group
     Route::put('/details/{id}/edit-confirm', [UserController::class, 'editConfirm'])->name('edit-confirm');
     // Update the user information in the database
     Route::put('/details/{id}/update', [UserController::class, 'update'])->name('update');
+    // End User Details --
 });
+
+Route::middleware(['auth', 'post.owner'])->prefix('post')->name('post.')->group(function () {
+    // -- Post Details--
+    Route::get('/details/{id}', [PostsController::class, 'details'])->name('details');
+    // Show the edit form
+});
+
+
 
 Route::middleware(['auth', 'isAdmin'])->prefix('admin')->name('admin.')->group(function () {
     // Admin dashboard route
@@ -54,6 +64,7 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/posts/create', [PostsController::class, 'create'])->name('posts.create');
     Route::post('/posts/create-confirm', [PostsController::class, 'createConfirm'])->name('posts.create-confirm');
     Route::post('/posts/store', [PostsController::class, 'store'])->name('posts.store');
+    Route::get('/posts/search', [PostsController::class, 'searchPosts'])->name('posts.search');
 });
 
 

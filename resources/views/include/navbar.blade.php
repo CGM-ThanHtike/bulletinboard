@@ -12,9 +12,11 @@
             @auth
                 @if (Route::has('login'))
             <ul class="navbar-nav me-auto ms-md-4 gap-3" id="navbarNav">
-                <li class="nav-item"><a href="/" class="nav-link" aria-current="page">ホーム</a></li>
+                <li class="nav-item">
+                    <a href="{{route('admin.dashboard')}}" class="nav-link" aria-current="page">ホーム</a>
+                </li>
                 <li class="nav-item"><a href="/" class="nav-link">ユーザー管理</a></li>
-                <li class="nav-item"><a href="#" class="nav-link">投稿管理</a></li>
+                <li class="nav-item"><a href="{{route('posts')}}" class="nav-link">投稿管理</a></li>
             </ul>
                 @endif
             @endauth

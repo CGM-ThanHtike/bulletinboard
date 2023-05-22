@@ -68,5 +68,12 @@
   position: absolute;
   right: 0;
   bottom: 0;
+}
 
+/* post index */
+.post-list-table table td {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  max-width: 20ch;
 }

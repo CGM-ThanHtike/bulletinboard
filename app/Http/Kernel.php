@@ -68,6 +68,8 @@ class Kernel extends HttpKernel
         'isAdmin' => \App\Http\Middleware\AdminMiddleware::class,
         //register for User middleware
         'user.access' => \App\Http\Middleware\UserMiddleware::class,
+        // Check post owner or not middleware
+        'post.owner' => \App\Http\Middleware\CheckPostOwnership::class,
 
     ];
 }

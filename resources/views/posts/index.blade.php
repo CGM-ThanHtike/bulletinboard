@@ -9,14 +9,36 @@
     
     <div class="container">
         <div class="main-header mb-4 fw-bold"><a href="{{route('posts')}}"><h1>投稿管理</h1></a></div>
-        <div class="search-section bg-light rounded-3">
+        <div class="search-section bg-light p-4 rounded-3">
             <div class="section-inner row justify-content-center">
-                {{-- search section come here --}}
+                <form action="{{ route('posts.search') }}" method="GET" class="row">
+                    <div class="form-group col-2">
+                        <input type="text" name="search" id="search" class="form-control" placeholder="検索...">
+                    </div>
+                    <div class="form-group col-2">
+                        <select class="form-select" name="status">
+                            <option value="" {{ isset($status) && $status == '' ? 'selected' : '' }}> All</option>
+                            <option value="1" {{ isset($status) && $status == '1' ? 'selected' : '' }}>Publish</option>
+                            <option value="0" {{ isset($status) && $status == '0' ? 'selected' : '' }}>Draft</option>
+                        </select>                        
+                    </div>
+                    <button type="reset" class="btn btn-outline-info col-2 mx-2">クリア</button>
+                    <button type="submit" class="btn btn-info col-2 mx-2">検索</button>
+                </form>
             </div>
         </div>
         <div class="middle-section py-5">
             <div class="row justify-content-between">
-                <div class="col-4 col-lg-2">検索結果： <span class="mx-1">90</span>件</div>
+                <div class="col-4 col-lg-2">検索結果： <span class="mx-1">
+                    @if(isset($postsCount))
+                        {{$postsCount}}
+                    @else 0
+                    @endif
+                    {{-- @if(isset($search) || isset($status)) {{$postsCount}}
+                    @elseif(isset($search) && isset($status)) {{$postsCount}}
+                    @else 0
+                    @endif --}}
+                </span>件</div>
                 <div class="btn-group col-4 col-lg-3" role="group" aria-label="Basic outlined example">
                     <a class="btn btn-outline-primary" href="/"><i class="fa-sharp px-2 fa-solid fa-arrow-up"></i>アップロード</a>
                     <a class="btn btn-outline-primary" href="/"><i class="fa-sharp px-2 fa-solid fa-arrow-down"></i>ダウンロード</a>
@@ -28,7 +50,7 @@
 
         </div>
         <div class="post-list-table">
-        
+            @if(count($posts) > 0)
             <table class="table table-striped table-bordered">
                 <thead>
                     <tr>
@@ -42,10 +64,13 @@
                 </thead>
                
                 <tbody>
-                    @if(count($posts) > 0)
                     @foreach($posts as $post)
+                    @if(
+                    auth()->user()->role == '1' || 
+                    (auth()->user()->role == '2' && auth()->user()->id === $post->created_user_id))<tr>
                     <tr>
-                        <td class="text-center align-middle">{{$post->title}}</td>
+                        <td class="text-center align-middle">
+                            <a href="{{route('post.details', $post->id)}}">{{$post->title}}</a></td>
                         <td class="text-center align-middle">{{$post->description}}</td>
                         <td class="text-center align-middle"><span class="fw-medium">{{$post->user->name}}</span><br>{{$post->created_at->format('Y/m/d')}}</td>
                         <td class="text-center align-middle"><span class="fw-medium">{{$post->userUpdate->name}}</span><br>{{$post->updated_at->format('Y/m/d')}}</td>
@@ -63,17 +88,27 @@
                                 <i class="me-2 fa-solid fa-trash-can"></i>削除</a>
                         </td>
                     </tr>
-                    @endforeach
                     @endif
+                    @endforeach
+                   
                 </tbody>
                
             </table>
-        {{$posts->links()}}
+            @else
+            <div class="alert alert-danger"><i class="fa-solid fa-triangle-exclamation me-2"></i>投稿がありません</div>
+            @endif
+        
+        @if(isset($search) && isset($status))
+            {{ $posts->appends(['search' => $search, 'status' => $status])->links() }}
+        @elseif(isset($search))
+            {{ $posts->appends(['search' => $search])->links() }}
+        @elseif(isset($status))
+            {{ $posts->appends(['status' => $status])->links() }}
+        @else
+            {{ $posts->links() }}
+        @endif
         </div>
 
     </div>
-
-    
- 
 
 @endsection
