@@ -54,4 +54,10 @@ class User extends Authenticatable
     {
         return $this->hasMany(Post::class, 'created_user_id');
     }
+
+    // public function getName()
+    // {
+    //     return $this->name;
+    // }
+
 }

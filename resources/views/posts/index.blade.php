@@ -17,9 +17,9 @@
                     </div>
                     <div class="form-group col-2">
                         <select class="form-select" name="status">
-                            <option value="" {{ isset($status) && $status == '' ? 'selected' : '' }}> All</option>
-                            <option value="1" {{ isset($status) && $status == '1' ? 'selected' : '' }}>Publish</option>
-                            <option value="0" {{ isset($status) && $status == '0' ? 'selected' : '' }}>Draft</option>
+                            <option value="" {{ isset($status) && $status == '' ? 'selected' : '' }}>ステータス</option>
+                            <option value="1" {{ isset($status) && $status == '1' ? 'selected' : '' }}>公開</option>
+                            <option value="0" {{ isset($status) && $status == '0' ? 'selected' : '' }}>未公開</option>
                         </select>                        
                     </div>
                     <button type="reset" class="btn btn-outline-info col-2 mx-2">クリア</button>
@@ -29,19 +29,17 @@
         </div>
         <div class="middle-section py-5">
             <div class="row justify-content-between">
-                <div class="col-4 col-lg-2">検索結果： <span class="mx-1">
+                <div class="col-6 col-lg-5 d-flex align-items-center">検索結果： 
+                  <span class="mx-1">
                     @if(isset($postsCount))
                         {{$postsCount}}
                     @else 0
                     @endif
-                    {{-- @if(isset($search) || isset($status)) {{$postsCount}}
-                    @elseif(isset($search) && isset($status)) {{$postsCount}}
-                    @else 0
-                    @endif --}}
-                </span>件</div>
-                <div class="btn-group col-4 col-lg-3" role="group" aria-label="Basic outlined example">
+                  </span>件
+                  <div class="btn-group ms-3" role="group" aria-label="Basic outlined example">
                     <a class="btn btn-outline-primary" href="/"><i class="fa-sharp px-2 fa-solid fa-arrow-up"></i>アップロード</a>
-                    <a class="btn btn-outline-primary" href="/"><i class="fa-sharp px-2 fa-solid fa-arrow-down"></i>ダウンロード</a>
+                    <a class="btn btn-outline-primary" href="{{route('posts.csv-download')}}"><i class="fa-sharp px-2 fa-solid fa-arrow-down"></i>ダウンロード</a>
+                  </div>
                 </div>
                 <div class="col-4 col-lg-2 d-flex justify-content-end">
                     <a class="btn btn-primary" href="{{route('posts.create')}}"><i class="me-2 fa-solid fa-circle-plus"></i>新規作成</a>

@@ -65,6 +65,7 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/posts/create-confirm', [PostsController::class, 'createConfirm'])->name('posts.create-confirm');
     Route::post('/posts/store', [PostsController::class, 'store'])->name('posts.store');
     Route::get('/posts/search', [PostsController::class, 'searchPosts'])->name('posts.search');
+    Route::get('/posts/csv-download', [PostsController::class, 'downloadPostsCsv'])->name('posts.csv-download');
 });
 
 

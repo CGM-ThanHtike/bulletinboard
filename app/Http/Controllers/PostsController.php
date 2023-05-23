@@ -5,7 +5,10 @@ namespace App\Http\Controllers;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Post;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Storage;
 
 class PostsController extends Controller
 {
@@ -25,13 +28,20 @@ class PostsController extends Controller
    */
   public function index()
   {
-    $posts = Post::Orderby('updated_at', 'desc')->paginate(5);
-    return view('posts.index')->with('posts', $posts);
+    // $posts = Post::Orderby('updated_at', 'desc')->paginate(5);
+    // return view('posts.index')->with('posts', $posts);
 
-    // $posts = Post::Orderby('created_at', 'desc')->paginate(5);
-    // $posts = Post::where('status', 1) // Filter posts where status is 1 (published)
-    //     ->orderBy('created_at', 'desc')
-    //     ->paginate(6);
+    $user = Auth::user();
+    if ($user->role == '2') {
+      $posts = Post::where('created_user_id', $user->id)
+        ->orderBy('updated_at', 'desc')
+        ->paginate(5);
+    } else {
+      $posts = Post::orderBy('updated_at', 'desc')
+        ->paginate(5);
+    }
+
+    return view('posts.index')->with('posts', $posts);
   }
   // public function index()
   // {
@@ -120,6 +130,15 @@ class PostsController extends Controller
   // Search function in posts
   public function searchPosts(Request $request)
   {
+
+    $validator = Validator::make($request->all(), [
+      'search' => 'nullable|string|max:255',
+      'status' => 'nullable|in:0,1',
+    ]);
+
+    if ($validator->fails()) {
+      return redirect()->back()->withErrors($validator)->withInput();
+    }
     $search = $request->input('search');
     $status = $request->input('status');
     $query = Post::query();
@@ -131,17 +150,133 @@ class PostsController extends Controller
       });
     }
 
-    if ($status != '') {
-      if ($status == '1' || $status == '0') {
+    if ($status !== '') {
+      if ($status === '1' || $status === '0') {
         $query->where('status', $status);
       }
+    }
+    // Get the authenticated user
+    $user = Auth::user();
+
+    // If the user is not an admin (role 1), restrict posts to their own created posts
+    if ($user->role != '1') {
+      $query->where('created_user_id', $user->id);
     }
 
     $postsCount = $query->count(); //get the post count for search resaults
 
+    $postDownload = $query->get();
+    // Store the search results in the session
+    session(['searchPosts' => $postDownload]);
+
     $posts = $query
       ->orderBy('created_at', 'desc')
       ->paginate(5);
+
+
     return view('posts.index', compact('posts', 'search', 'status', 'postsCount'));
+  }
+  public function downloadPostsCsv()
+  {
+    // Retrieve the search results from the session
+    $posts = session('searchPosts');
+
+    // Forget/remove the session data
+    session()->forget('searchPosts');
+
+    if ($posts !== null && $posts->count() > 0) {
+      // Create a CSV string
+      $csvContent = '';
+
+      // Add the CSV headers
+      $csvContent .= "Title,Description,Created_User,Created_at,Updated_User,Updated_at,Status\n";
+
+      // Add the post data to the CSV
+      foreach ($posts as $post) {
+        // Encode Japanese characters using mb_convert_encoding
+        $title = mb_convert_encoding($post->title, 'SJIS', 'UTF-8');
+        $description = mb_convert_encoding($post->description, 'SJIS', 'UTF-8');
+        $status = $post->status;
+        $created_user = mb_convert_encoding($post->user->name, 'SJIS', 'UTF-8');
+        $created_at = $post->created_at;
+        $updated_user = mb_convert_encoding($post->userUpdate->name, 'SJIS', 'UTF-8');
+        $updated_at = $post->updated_at;
+
+        $csvContent .= "{$title},{$description},{$created_user},{$created_at},{$updated_user},{$updated_at},{$status}\n";
+      }
+
+      // Set the response headers
+      $headers = [
+        'Content-Type' => 'text/csv;',
+        'Content-Disposition' => 'attachment; filename="posts.csv"',
+      ];
+
+      // Return the CSV as a downloadable file
+      return response()->streamDownload(
+        function () use ($csvContent) {
+          echo $csvContent;
+        },
+        'posts.csv',
+        $headers
+      );
+    } else {
+      return redirect()->back()->with('error', '検索結果は０件です。先に検索してからダウンロードをしてください');
+    }
+  }
+
+  public function uploadPostsCsv(Request $request)
+  {
+    // Validate the uploaded file
+    $validator = Validator::make($request->all(), [
+      'csv_file' => 'required|mimes:csv,txt|max:2048',
+    ]);
+
+    if ($validator->fails()) {
+      return redirect()->back()->withErrors($validator)->withInput();
+    }
+
+    // Check if the file was successfully uploaded
+    if ($request->hasFile('csv_file')) {
+      $csvFile = $request->file('csv_file');
+
+      // Get the authenticated user
+      $user = Auth::user();
+
+      // Store the file in the user's directory
+      $filePath = $csvFile->storeAs('public/' . $user->id, $csvFile->getClientOriginalName());
+
+      // Get the stored file's full path
+      $fullPath = Storage::path($filePath);
+
+      // Read the CSV file
+      $fileData = array_map('str_getcsv', file($fullPath));
+
+      // Validate the file structure (e.g., two columns: title and description)
+      if (count($fileData[0]) !== 2 || $fileData[0][0] !== 'title' || $fileData[0][1] !== 'description') {
+        return redirect()->back()->with('error', 'Invalid file structure. The CSV file must have two columns: "title" and "description".');
+      }
+
+      // Remove the header row
+      array_shift($fileData);
+
+      // Process and save the data to the posts table
+      foreach ($fileData as $row) {
+        $title = $row[0];
+        $description = $row[1];
+
+        // Create a new post instance and assign the values
+        $post = new Post();
+        $post->title = $title;
+        $post->description = $description;
+        $post->created_user_id = $user->id;
+        $post->save();
+      }
+
+      // Redirect to the post index view
+      return redirect()->route('posts.index')->with('success', 'CSV file uploaded and data saved successfully.');
+    }
+
+    // Redirect back with error message if no file was uploaded
+    return redirect()->back()->with('error', 'Failed to upload CSV file.');
   }
 }
