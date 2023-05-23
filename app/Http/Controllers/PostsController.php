@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\File;
 
 class PostsController extends Controller
 {
@@ -127,6 +128,13 @@ class PostsController extends Controller
     return view('posts.details')->with('post', $post);
   }
 
+  public function destroy(string $id)
+  {
+    $post = Post::findOrFail($id);
+    $post->delete();
+    return redirect()->back()->with('success', 'Post Removed');
+  }
+
   // Search function in posts
   public function searchPosts(Request $request)
   {
@@ -176,6 +184,7 @@ class PostsController extends Controller
 
     return view('posts.index', compact('posts', 'search', 'status', 'postsCount'));
   }
+
   public function downloadPostsCsv()
   {
     // Retrieve the search results from the session
@@ -224,6 +233,12 @@ class PostsController extends Controller
     }
   }
 
+  public function csv()
+  {
+    return view('posts.csv');
+  }
+
+
   public function uploadPostsCsv(Request $request)
   {
     // Validate the uploaded file
@@ -248,8 +263,10 @@ class PostsController extends Controller
       // Get the stored file's full path
       $fullPath = Storage::path($filePath);
 
-      // Read the CSV file
-      $fileData = array_map('str_getcsv', file($fullPath));
+      // Read the CSV file with proper encoding
+      $fileContent = File::get($fullPath);
+      $fileContent = mb_convert_encoding($fileContent, 'UTF-8', 'auto');
+      $fileData = array_map('str_getcsv', explode("\n", $fileContent));
 
       // Validate the file structure (e.g., two columns: title and description)
       if (count($fileData[0]) !== 2 || $fileData[0][0] !== 'title' || $fileData[0][1] !== 'description') {
@@ -266,14 +283,16 @@ class PostsController extends Controller
 
         // Create a new post instance and assign the values
         $post = new Post();
+        $user = auth()->user(); // Retrieve the authenticated user or adjust accordingly
         $post->title = $title;
         $post->description = $description;
         $post->created_user_id = $user->id;
+        $post->updated_user_id = $user->id;
         $post->save();
       }
 
       // Redirect to the post index view
-      return redirect()->route('posts.index')->with('success', 'CSV file uploaded and data saved successfully.');
+      return redirect()->route('posts')->with('success', 'CSV file uploaded and data saved successfully.');
     }
 
     // Redirect back with error message if no file was uploaded

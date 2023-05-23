@@ -8,6 +8,16 @@
   cursor: pointer;
 }
 
+/* for input password */
+#password+.glyphicon,
+#password-confirm+.glyphicon {
+  cursor: pointer;
+  pointer-events: all;
+  margin-left: -32px;
+  top: 11px;
+  right: 0;
+}
+
 /* styles */
 
 .bg-brand {
@@ -78,11 +88,11 @@
   max-width: 20ch;
 }
 
-#password+.glyphicon,
-#password-confirm+.glyphicon {
-  cursor: pointer;
-  pointer-events: all;
-  margin-left: -32px;
-  top: 11px;
-  right: 0;
+/* csv.blade -> file upload form style */
+.custom-file-label::after {
+  content: attr(data-placeholder);
+}
+
+.custom-file-input~.custom-file-label[data-browse]:hover::after {
+  content: attr(data-browse);
 }

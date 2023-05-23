@@ -37,7 +37,7 @@
                     @endif
                   </span>件
                   <div class="btn-group ms-3" role="group" aria-label="Basic outlined example">
-                    <a class="btn btn-outline-primary" href="/"><i class="fa-sharp px-2 fa-solid fa-arrow-up"></i>アップロード</a>
+                    <a class="btn btn-outline-primary" href="{{route('posts.csv')}}"><i class="fa-sharp px-2 fa-solid fa-arrow-up"></i>アップロード</a>
                     <a class="btn btn-outline-primary" href="{{route('posts.csv-download')}}"><i class="fa-sharp px-2 fa-solid fa-arrow-down"></i>ダウンロード</a>
                   </div>
                 </div>
@@ -82,7 +82,7 @@
                         <td class="text-center align-middle">
                             <a class="btn btn-sm btn-outline-dark me-2" href="/">
                                 <i class="me-2 fa-regular fa-pen-to-square"></i>編集</a>
-                            <a class="btn btn-sm btn-outline-danger" href="/">
+                            <a class="btn btn-sm btn-outline-danger" href="{{route('post.delete', $post->id)}}">
                                 <i class="me-2 fa-solid fa-trash-can"></i>削除</a>
                         </td>
                     </tr>
